@@ -3,7 +3,7 @@
 #include <vector>
 #include <utility> //для подключения pair<T1, T2>
 
-#include "Cell.hpp"
+#include "../Cell/Cell.hpp"
 
 typedef std::vector<std::vector<Cell>> GameMapStorage;
 

@@ -1,6 +1,6 @@
-install: Cell.cpp Cell.hpp GameMap.hpp GameMap.cpp
-	g++ Cell.cpp -c -o Cell.o
-	g++ GameMap.cpp -c -o GameMap.o
+install: Cell/Cell.cpp Cell/Cell.hpp GameMap/GameMap.hpp GameMap/GameMap.cpp
+	g++ Cell/Cell.cpp -c -o Cell.o
+	g++ GameMap/GameMap.cpp -c -o GameMap.o
 
 clean:
 	rm Cell.o || true
