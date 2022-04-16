@@ -22,6 +22,12 @@ enum GameStatus {
 	INCORRECT
 };
 
+enum Turn {
+	PLAYER_FIRST_TURN,
+	PLAYER_SECOND_TURN,
+	END_GAME
+};
+
 class GameMap {
 public:
 	GameMap();
@@ -30,6 +36,7 @@ public:
 	CellFlag GetCell(const CellCoord, const CellCoord);
 
 	GameStatus CheckGameStatus();
+	Turn GetTurn();
 private:
 	GameMapStorage storage_; 
 

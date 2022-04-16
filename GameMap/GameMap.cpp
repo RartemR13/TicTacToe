@@ -227,3 +227,36 @@ GameStatus GameMap::CheckGameStatus() {
 
 	return GameStatus::DRAW;
 }
+
+Turn GameMap::GetTurn() {
+	if (GameMapConstant::ROW_LEN > GameMapConstant::CELL_COORD_MAX)
+		throw std::runtime_error("ROW_LEN > CELL_COORD_MAX");
+
+	if (GameMapConstant::COLUMN_LEN > GameMapConstant::CELL_COORD_MAX)
+		throw std::runtime_error("COLUMN_LEN > CELL_COORD_MAX");
+
+	if (CheckGameStatus() != GameStatus::PROCESS)
+		return Turn::END_GAME;
+
+	unsigned int first_flags_count  = 0,
+				 second_flags_count = 0;
+
+	for (CellCoord row = 0; row < GameMapConstant::COLUMN_LEN; ++row)
+		for (CellCoord column = 0; column < GameMapConstant::ROW_LEN; ++column)
+			if (GetCell(row, column) == CellFlag::PLAYER_FIRST)
+				first_flags_count++;
+			else if (GetCell(row, column) == CellFlag::PLAYER_SECOND)
+				second_flags_count++;
+
+	if (abs(static_cast<int>(first_flags_count) - 
+		    static_cast<int>(second_flags_count)) > 1 || 
+		first_flags_count < second_flags_count)
+	{
+		throw std::runtime_error("Incorrect GameMap");
+	}
+
+	if (first_flags_count > second_flags_count)
+		return Turn::PLAYER_SECOND_TURN;
+
+	return Turn::PLAYER_FIRST_TURN;
+}
