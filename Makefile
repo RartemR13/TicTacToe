@@ -2,9 +2,11 @@ install: Cell/Cell.cpp Cell/Cell.hpp GameMap/GameMap.hpp GameMap/GameMap.cpp Pla
 	g++ Cell/Cell.cpp -c -o Cell.o
 	g++ GameMap/GameMap.cpp -c -o GameMap.o
 	g++ Player/Player.cpp -c -o Player.o
+	g++ Computer/Computer.cpp -c -o Computer.o
 
 clean:
 	rm Cell.o || true
 	rm GameMap.o || true
 	rm Player.o || true
+	rm Computer.o || true
 	

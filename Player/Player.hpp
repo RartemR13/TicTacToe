@@ -7,7 +7,7 @@ public:
 	Player(GameMap&, const CellFlag, const Turn);
 
 	GameStatus Set(const CellCoord, const CellCoord);
-private:
+protected:
 	GameMap& game_map_;
 	const CellFlag player_flag_;
 	const Turn turn_;

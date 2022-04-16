@@ -10,7 +10,7 @@ Player::Player(GameMap& game_map, const CellFlag player_flag, const Turn turn) :
 
 GameStatus Player::Set(const CellCoord row, const CellCoord column) {
 	if (game_map_.GetTurn() != turn_)
-		throw std::runtime_error("Another player's turn");
+		throw std::runtime_error("Another player's turn or was end");
 
 	game_map_.SetCell(row, column, player_flag_);
 
