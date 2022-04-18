@@ -6,9 +6,10 @@ install: Cell/Cell.cpp Cell/Cell.hpp \
 	g++ GameMap/GameMap.cpp -c -o GameMap.o
 	g++ Player/Player.cpp -c -o Player.o
 	g++ Computer/Computer.cpp -c -o Computer.o
-	g++ Window/Window.cpp -c -o Window.o
+	g++ Window/Window.cpp -c -o Window.o 
 	g++ Window/WindowEvent/WindowEvent.cpp -c -o WindowEvent.o
-	g++ test.cpp -lSDL2 -lSDL2main -o test Window.o WindowEvent.o
+	g++ Game/Game.cpp -c -o Game.o
+	g++ test.cpp -lSDL2 -lSDL2main -o test Window.o WindowEvent.o Game.o GameMap.o Cell.o
 
 clean:
 	rm *.o || true

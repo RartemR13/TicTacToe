@@ -19,8 +19,21 @@ public:
 	void Fill(unsigned char, unsigned char, unsigned char);
 
 	WindowEvent WaitEvent();
+
+
+	void DrawVerticalLine(unsigned short,
+						  unsigned char, unsigned char, unsigned char);
+
+	void DrawGorizontalLine(unsigned short,
+							unsigned char, unsigned char, unsigned char);
 private:
 	Window() = default;
+
+	void SetPixel(unsigned short, unsigned short,
+			  	  unsigned char, unsigned char, unsigned char);
+
+	unsigned short width_,
+				   height_;
 
 	void* window_;
 	void* surface_;

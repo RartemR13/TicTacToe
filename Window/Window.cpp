@@ -7,6 +7,9 @@ Window::Window(const WindowSize height, const WindowSize width, std::string titl
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		throw std::runtime_error(SDL_GetError());
 
+	width_  = width;
+	height_ = height;
+
 	window_ = SDL_CreateWindow(title.c_str(), 
 							   SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
 							   height, width, 
@@ -36,6 +39,40 @@ void Window::Fill(unsigned char r, unsigned char g, unsigned char b) {
 	SDL_FillRect(static_cast<SDL_Surface*>(surface_), 
 				 NULL, 
 				 SDL_MapRGB(static_cast<SDL_Surface*>(surface_)->format, r, g, b));
+
+	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
+}
+
+void Window::SetPixel(unsigned short x, unsigned short y,
+			  		  unsigned char r, unsigned char g, unsigned char b) 
+{
+	Uint32 * const target_pixel = (unsigned int*)((unsigned char*)(static_cast<SDL_Surface*>(surface_)->pixels)
+	                                         + y * static_cast<SDL_Surface*>(surface_)->pitch
+	                                         + x * static_cast<SDL_Surface*>(surface_)->format->BytesPerPixel);
+
+	unsigned char pixel[4] = {};
+
+	pixel[0] = r;
+	pixel[1] = g;
+	pixel[2] = b;
+
+	*target_pixel = *(unsigned int*)pixel;
+}
+
+void Window::DrawVerticalLine(unsigned short x,
+					  		  unsigned char r, unsigned char g, unsigned char b)
+{
+	for (int i = 0; i < height_; ++i)
+		SetPixel(x, i, r, g, b);
+
+	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
+}
+
+void Window::DrawGorizontalLine(unsigned short y,
+								unsigned char r, unsigned char g, unsigned char b) 
+{
+	for (int i = 0; i < width_; ++i)
+		SetPixel(i, y, r, g, b);
 
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
