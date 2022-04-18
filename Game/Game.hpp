@@ -14,10 +14,14 @@ class Game {
 public:
 	Game(GameMode);
 
-	void DrawNet();
+	void StartGame();
 
 private:
-	Game();
+
+	void DrawNet();
+
+	void DrawX(CellCoord, CellCoord);
+	void Draw0(CellCoord, CellCoord);
 
 	Window  window_;
 	GameMap game_map_;

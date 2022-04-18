@@ -3,7 +3,7 @@
 int main() {
 
 	Game game(GameMode::COMPUTER_MODE);
-	game.DrawNet();
+	game.StartGame();
 
 	return 0;
 }

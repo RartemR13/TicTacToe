@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "WindowEvent/WindowEvent.hpp"
 
@@ -18,7 +19,8 @@ public:
 	void Sleep(unsigned int);
 	void Fill(unsigned char, unsigned char, unsigned char);
 
-	WindowEvent WaitEvent();
+	WindowEvent* WaitEvent();
+	void DeleteEvents();
 
 
 	void DrawVerticalLine(unsigned short,
@@ -26,6 +28,14 @@ public:
 
 	void DrawGorizontalLine(unsigned short,
 							unsigned char, unsigned char, unsigned char);
+
+	void DrawCircle(unsigned short, unsigned short,
+					unsigned short, unsigned short,
+					unsigned char, unsigned char, unsigned char);
+
+	void DrawDiagonalLine(unsigned short, unsigned short,
+						  short,
+						  unsigned char, unsigned char, unsigned char);
 private:
 	Window() = default;
 
@@ -39,4 +49,6 @@ private:
 	void* surface_;
 
 	unsigned int windowID_;
+
+	std::vector<WindowEvent*> events_;
 };

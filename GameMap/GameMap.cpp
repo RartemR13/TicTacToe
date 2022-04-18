@@ -1,6 +1,7 @@
 #include "GameMap.hpp"
 
 #include <stdexcept> //для бросания исключений
+#include <climits>
 
 GameMap::GameMap() {
 	if (GameMapConstant::ROW_LEN > GameMapConstant::CELL_COORD_MAX)
@@ -17,20 +18,20 @@ void GameMap::SetCell(const CellCoord row, const CellCoord column,
 					  const CellFlag flag) 
 {
 	if (row >= GameMapConstant::ROW_LEN)
-		throw std::invalid_argument("row >= ROW_LEN");
+		throw std::invalid_argument("SetCell: row >= ROW_LEN");
 
 	if (column >= GameMapConstant::COLUMN_LEN)
-		throw std::invalid_argument("column >= COLUMN_LEN");
+		throw std::invalid_argument("SetCell: column >= COLUMN_LEN");
 
 	storage_[row][column].SetFlag(flag);
 }
 
 CellFlag GameMap::GetCell(const CellCoord row, const CellCoord column) {
 	if (row >= GameMapConstant::ROW_LEN)
-		throw std::invalid_argument("row >= ROW_LEN");
+		throw std::invalid_argument("GetCell: row >= ROW_LEN");
 
 	if (column >= GameMapConstant::COLUMN_LEN)
-		throw std::invalid_argument("column >= COLUMN_LEN");
+		throw std::invalid_argument("GetCell: column >= COLUMN_LEN");
 
 	return storage_[row][column].GetFlag();	
 }
@@ -144,7 +145,7 @@ bool GameMap::CheckSideDiagonalCollinearsGameStatus(const CellFlag check_flag) {
 		unsigned char cur_streak = 0;
 
 		for (CellCoord row = start_row; 
-			 row < GameMapConstant::COLUMN_LEN && column >= 0;
+			 row < GameMapConstant::COLUMN_LEN && column != UCHAR_MAX;
 			 ++row, --column) 
 		{
 			if (GetCell(row, column) == check_flag)
@@ -157,12 +158,12 @@ bool GameMap::CheckSideDiagonalCollinearsGameStatus(const CellFlag check_flag) {
 		}
 	}
 
-	for (CellCoord start_column = GameMapConstant::ROW_LEN - 1; start_column >= 0; --start_column) {
+	for (CellCoord start_column = GameMapConstant::ROW_LEN - 1; start_column != UCHAR_MAX; --start_column) {
 		CellCoord row = 0;
 		unsigned char cur_streak = 0;
 
 		for (CellCoord column = start_column;
-			 row < GameMapConstant::COLUMN_LEN && column >= 0;
+			 row < GameMapConstant::COLUMN_LEN && column != UCHAR_MAX;
 			 ++row, --column) 
 		{
 			if (GetCell(row, column) == check_flag)
