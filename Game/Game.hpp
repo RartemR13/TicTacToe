@@ -20,10 +20,11 @@ private:
 
 	void DrawNet();
 
-	void DrawX(CellCoord, CellCoord);
-	void Draw0(CellCoord, CellCoord);
-
 	Window  window_;
 	GameMap game_map_;
 	GameMode game_mode_;
+
+	Player player_first_;
+	Player player_second_;
+	Computer computer_;
 };

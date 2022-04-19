@@ -4,8 +4,6 @@
 
 class Computer : Player {
 public:
-	GameStatus DoTurn();
-
-private:
-	GameStatus Set(const CellCoord, const CellCoord);
+	GameStatus DoTurn(Window&, void (*)(CellCoord, CellCoord, Window& window));
+	Computer(GameMap&, const CellFlag, const Turn);
 };

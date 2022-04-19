@@ -2,12 +2,30 @@
 
 #include <iostream>
 
+void DrawX(CellCoord row, CellCoord column, Window& window) {
+	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 5, 42, 255, 0, 0);
+	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 6, 42, 255, 0, 0);
+
+	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 47, -42, 255, 0, 0);
+	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 46, -42, 255, 0, 0);
+}
+
+void Draw0(CellCoord row, CellCoord column, Window& window) {
+	window.DrawCircle(row*52 + 5, column*52 + 5, row*52 + 47, column*52 + 47, 0, 0, 255);
+}
+
 Game::Game(GameMode game_mode) :
 	window_(Window(50 * 19 + 40, 50 * 19 + 40, "TicTacToe")),
 	game_map_(GameMap()),
-	game_mode_(game_mode)
+	game_mode_(game_mode),
+	player_first_(Player(game_map_, CellFlag::PLAYER_FIRST, Turn::PLAYER_FIRST_TURN)),
+	player_second_(Player(game_map_, CellFlag::PLAYER_SECOND, Turn::PLAYER_SECOND_TURN)),
+	computer_(Computer(game_map_, CellFlag::PLAYER_FIRST, Turn::PLAYER_FIRST_TURN))
 {
 	window_.Fill(255, 255, 255);
+	
+	if (game_mode == GameMode::COMPUTER_MODE)
+		computer_.DoTurn(window_, DrawX);
 }
 
 void Game::DrawNet() {
@@ -22,17 +40,6 @@ void Game::DrawNet() {
 	}
 }
 
-void Game::DrawX(CellCoord row, CellCoord column) {
-	window_.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 5, 42, 255, 0, 0);
-	window_.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 6, 42, 255, 0, 0);
-
-	window_.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 47, -42, 255, 0, 0);
-	window_.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 46, -42, 255, 0, 0);
-}
-
-void Game::Draw0(CellCoord row, CellCoord column) {
-	window_.DrawCircle(row*52 + 5, column*52 + 5, row*52 + 47, column*52 + 47, 0, 0, 255);
-}
 
 
 bool IsCellClick(std::pair<unsigned short, unsigned short> click) {
@@ -71,13 +78,16 @@ void Game::StartGame() {
 				std::cout << (int)row << " " << (int)column << std::endl;
 
 				if (game_map_.GetCell(row, column) == CellFlag::UNUSED && IsCellClick(click)) {
-					if (game_map_.GetTurn() == Turn::PLAYER_FIRST_TURN) {
-						DrawX(row, column);
-						game_map_.SetCell(row, column, CellFlag::PLAYER_FIRST);
-					}
-					else if (game_map_.GetTurn() == Turn::PLAYER_SECOND_TURN) {
-						Draw0(row, column);
-						game_map_.SetCell(row, column, CellFlag::PLAYER_SECOND);
+					if (game_mode_ == GameMode::PVP_MODE) {
+						if (game_map_.GetTurn() == Turn::PLAYER_FIRST_TURN)
+							player_first_.Set(row, column, window_, DrawX);
+						else if (game_map_.GetTurn() == Turn::PLAYER_SECOND_TURN)
+							player_second_.Set(row, column, window_, Draw0);
+					} else if (game_mode_ == GameMode::COMPUTER_MODE) {
+						if (game_map_.GetTurn() == Turn::PLAYER_SECOND_TURN) {
+							if (player_second_.Set(row, column, window_, Draw0) == GameStatus::PROCESS)
+								computer_.DoTurn(window_, DrawX);
+						}
 					}
 				}
 				break;
