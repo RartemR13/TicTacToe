@@ -2,7 +2,7 @@
 
 int main() {
 
-	Game game(GameMode::PVP_MODE);
+	Game game(GameMode::COMPUTER_MODE, 4, 4, 4);
 	game.StartGame();
 
 	return 0;

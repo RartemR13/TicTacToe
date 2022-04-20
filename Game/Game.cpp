@@ -14,9 +14,10 @@ void Draw0(CellCoord row, CellCoord column, Window& window) {
 	window.DrawCircle(row*52 + 5, column*52 + 5, row*52 + 47, column*52 + 47, 0, 0, 255);
 }
 
-Game::Game(GameMode game_mode) :
-	window_(Window(50 * 19 + 40, 50 * 19 + 40, "TicTacToe")),
-	game_map_(GameMap()),
+Game::Game(GameMode game_mode, 
+		   CellCoord width_cells, CellCoord height_cells, CellCoord win_streak_size) :
+	window_(Window(50 * width_cells + 2 + (width_cells*2), 50 * height_cells + 2 + (height_cells*2), "TicTacToe")),
+	game_map_(GameMap(width_cells, height_cells, win_streak_size)),
 	game_mode_(game_mode),
 	player_first_(Player(game_map_, CellFlag::PLAYER_FIRST, Turn::PLAYER_FIRST_TURN)),
 	player_second_(Player(game_map_, CellFlag::PLAYER_SECOND, Turn::PLAYER_SECOND_TURN)),
@@ -29,21 +30,21 @@ Game::Game(GameMode game_mode) :
 }
 
 void Game::DrawNet() {
-
-	
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i <= game_map_.ROW_LEN_; ++i) {
 		window_.DrawVerticalLine(i * 52, 0, 0, 0);
-		window_.DrawVerticalLine(i * 52 + 1, 0, 0, 0);
+		window_.DrawVerticalLine(i * 52 + 1, 0, 0, 0);	
+	}
 
+	for (int i = 0; i <= game_map_.COLUMN_LEN_; ++i) {
 		window_.DrawGorizontalLine(i * 52, 0, 0, 0);
-		window_.DrawGorizontalLine(i * 52 + 1, 0, 0, 0);
+		window_.DrawGorizontalLine(i * 52 + 1, 0, 0, 0);		
 	}
 }
 
 
 
 bool IsCellClick(std::pair<unsigned short, unsigned short> click) {
-	return click.first % 52 && click.second % 52; 
+	return click.first % 52 > 1 && click.second % 52 > 1; 
 }
 
 CellCoord GetClickRow(std::pair<unsigned short, unsigned short> click) {
@@ -77,7 +78,7 @@ void Game::StartGame() {
 
 				std::cout << (int)row << " " << (int)column << std::endl;
 
-				if (game_map_.GetCell(row, column) == CellFlag::UNUSED && IsCellClick(click)) {
+				if (IsCellClick(click) && game_map_.GetCell(row, column) == CellFlag::UNUSED) {
 					if (game_mode_ == GameMode::PVP_MODE) {
 						if (game_map_.GetTurn() == Turn::PLAYER_FIRST_TURN)
 							player_first_.Set(row, column, window_, DrawX);

@@ -12,7 +12,7 @@ enum GameMode {
 
 class Game {
 public:
-	Game(GameMode);
+	Game(GameMode, CellCoord = 19, CellCoord = 19, CellCoord = 5);
 
 	void StartGame();
 

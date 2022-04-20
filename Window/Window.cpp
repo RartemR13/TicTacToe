@@ -3,7 +3,9 @@
 #include <SDL2/SDL.h>
 #include <stdexcept>
 
-Window::Window(const WindowSize height, const WindowSize width, std::string title) {
+#include <iostream>
+
+Window::Window(const WindowSize width, const WindowSize height, std::string title) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		throw std::runtime_error(SDL_GetError());
 
@@ -12,7 +14,7 @@ Window::Window(const WindowSize height, const WindowSize width, std::string titl
 
 	window_ = SDL_CreateWindow(title.c_str(), 
 							   SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-							   height, width, 
+							   width, height, 
 							   SDL_WINDOW_SHOWN);
 	if (window_ == nullptr)
 		throw std::runtime_error(SDL_GetError());
@@ -63,7 +65,7 @@ void Window::DrawVerticalLine(unsigned short x,
 					  		  unsigned char r, unsigned char g, unsigned char b)
 {
 	for (int i = 0; i < height_; ++i)
-		SetPixel(i, x, r, g, b);
+		SetPixel(x, i, r, g, b);
 
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
@@ -72,7 +74,7 @@ void Window::DrawGorizontalLine(unsigned short y,
 								unsigned char r, unsigned char g, unsigned char b) 
 {
 	for (int i = 0; i < width_; ++i)
-		SetPixel(y, i, r, g, b);
+		SetPixel(i, y, r, g, b);
 
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }

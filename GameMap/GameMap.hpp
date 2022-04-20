@@ -8,10 +8,7 @@
 typedef std::vector<std::vector<Cell>> GameMapStorage;
 
 enum GameMapConstant {
-	COLUMN_LEN 		= 19,
-	ROW_LEN    		= 19,
-	WIN_STREAK_SIZE = 5,
-	CELL_COORD_MAX  = (1u << (sizeof(CellCoord) * 8))
+	CELL_COORD_MAX  = 19
 };
 
 enum GameStatus {
@@ -30,13 +27,17 @@ enum Turn {
 
 class GameMap {
 public:
-	GameMap();
+	GameMap(unsigned char = 19, unsigned char = 19, unsigned char = 5);
 
 	void SetCell(const CellCoord, const CellCoord, const CellFlag);
 	CellFlag GetCell(const CellCoord, const CellCoord);
 
 	GameStatus CheckGameStatus();
 	Turn GetTurn();
+
+	const CellCoord ROW_LEN_,
+					COLUMN_LEN_,
+					WIN_STREAK_SIZE_;
 private:
 	GameMapStorage storage_; 
 
