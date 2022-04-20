@@ -112,6 +112,23 @@ void Window::DrawCircle(unsigned short x1, unsigned short y1,
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
 
+void Window::DrawFrame(unsigned short x1, unsigned short y1,
+			   		   unsigned short x2, unsigned short y2,
+			   		   unsigned char r, unsigned char g, unsigned char b) 
+{
+	for (int i = x1; i <= x2; ++i) {
+		SetPixel(i, y1, r, g, b);
+		SetPixel(i, y2, r, g, b);
+	}
+
+	for (int i = y1; i <= y2; ++i) {
+		SetPixel(x1, i, r, g, b);
+		SetPixel(x2, i, r, g, b);
+	}
+
+	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
+}
+
 WindowEvent* Window::WaitEvent() {
 	SDL_Event event = {};
 	if (SDL_WaitEvent(&event) == 0)
@@ -125,7 +142,7 @@ WindowEvent* Window::WaitEvent() {
 
 		case SDL_MOUSEBUTTONDOWN:
 			if (event.button.button == SDL_BUTTON_LEFT) {
-				events_.push_back(new ClickEvent(event.button.y, event.button.x));
+				events_.push_back(new ClickEvent(event.button.x, event.button.y));
 				return &(*events_.back());
 			}
 			break;
@@ -139,4 +156,20 @@ void Window::DeleteEvents() {
 		delete events_.back();
 		events_.pop_back();
 	}
+}
+
+void Window::DrawBMP(std::string path, unsigned short x, unsigned short y) {
+	SDL_Surface *img = SDL_LoadBMP(path.c_str());
+	if (img == nullptr)
+		throw std::runtime_error(SDL_GetError());
+
+	SDL_Rect dest;
+	dest.x = x;
+	dest.y = y;
+
+	if (SDL_BlitSurface(img, NULL, static_cast<SDL_Surface*>(surface_), &dest) != 0)
+		throw std::runtime_error(SDL_GetError());
+
+	SDL_FreeSurface(img);
+	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }

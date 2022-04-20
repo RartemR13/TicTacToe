@@ -48,11 +48,11 @@ bool IsCellClick(std::pair<unsigned short, unsigned short> click) {
 }
 
 CellCoord GetClickRow(std::pair<unsigned short, unsigned short> click) {
-	return click.first / 52; 
+	return click.second / 52; 
 }
 
 CellCoord GetClickColumn(std::pair<unsigned short, unsigned short> click) {
-	return click.second / 52;
+	return click.first / 52;
 }
 
 

@@ -9,7 +9,8 @@ install: Cell/Cell.cpp Cell/Cell.hpp \
 	g++ -O2 -std=c++17 Window/Window.cpp -c -o Window.o #-fsanitize=address
 	g++ -O2 -std=c++17 Window/WindowEvent/WindowEvent.cpp -c -o WindowEvent.o #-fsanitize=address
 	g++ -O2 -std=c++17 Game/Game.cpp -c -o Game.o #-fsanitize=address
-	g++ -O2 -std=c++17 test.cpp -lSDL2 -lSDL2main -o test Window.o WindowEvent.o Game.o GameMap.o Cell.o Player.o Computer.o
+	g++ -O2 -std=c++17 Menu/Menu.cpp -c -o Menu.o
+	g++ -O2 -std=c++17 test.cpp -lSDL2 -lSDL2main -o test Window.o WindowEvent.o Game.o GameMap.o Cell.o Player.o Computer.o Menu.o
 
 clean:
 	rm *.o || true

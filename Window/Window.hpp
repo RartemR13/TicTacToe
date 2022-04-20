@@ -19,6 +19,8 @@ public:
 	void Sleep(unsigned int);
 	void Fill(unsigned char, unsigned char, unsigned char);
 
+	void DrawBMP(std::string, unsigned short, unsigned short);
+
 	WindowEvent* WaitEvent();
 	void DeleteEvents();
 
@@ -36,6 +38,10 @@ public:
 	void DrawDiagonalLine(unsigned short, unsigned short,
 						  short,
 						  unsigned char, unsigned char, unsigned char);
+
+	void DrawFrame(unsigned short, unsigned short,
+				   unsigned short, unsigned short,
+				   unsigned char, unsigned char, unsigned char);
 private:
 	Window() = default;
 
