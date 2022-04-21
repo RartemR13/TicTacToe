@@ -41,13 +41,9 @@ public:
 					COLUMN_LEN_,
 					WIN_STREAK_SIZE_;
 private:
-	GameMapStorage storage_; 
+	GameMapStorage storage_;
 
-	bool CheckRowsGameStatus(const CellFlag);
-	bool CheckColumnsGameStatus(const CellFlag);
-
-	bool CheckMainDiagonalCollinearsGameStatus(const CellFlag);
-	bool CheckSideDiagonalCollinearsGameStatus(const CellFlag);
+	bool CheckPlayerWin(const CellFlag);
 
 	bool CheckUnusedCells();
 };

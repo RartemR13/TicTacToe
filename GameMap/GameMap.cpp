@@ -1,4 +1,5 @@
 #include "GameMap.hpp"
+#include "../Liner/Liner.hpp"
 
 #include <stdexcept> //для бросания исключений
 #include <climits>
@@ -42,149 +43,6 @@ CellFlag GameMap::GetCell(const CellCoord row, const CellCoord column) {
 	return storage_[row][column].GetFlag();	
 }
 
-bool GameMap::CheckRowsGameStatus(const CellFlag check_flag) {
-	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	if (COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	for (CellCoord row = 0; row < COLUMN_LEN_; ++row) {
-		unsigned char cur_streak = 0;
-
-		for (CellCoord column = 0; column < ROW_LEN_; ++column) {
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}
-
-	return false;
-}
-
-bool GameMap::CheckColumnsGameStatus(const CellFlag check_flag) {
-	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	if (COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	for (CellCoord column = 0; column < ROW_LEN_; ++column) {
-		unsigned char cur_streak = 0;
-
-		for (CellCoord row = 0; row < COLUMN_LEN_; ++row) {
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}	
-
-	return false;
-}
-
-bool GameMap::CheckMainDiagonalCollinearsGameStatus(const CellFlag check_flag) {
-	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	if (COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	for (CellCoord start_row = 0; start_row < COLUMN_LEN_; ++start_row) {
-		CellCoord column = 0;
-		unsigned char cur_streak = 0;
-
-		for (CellCoord row = start_row; 
-			 row < COLUMN_LEN_ && column < ROW_LEN_;
-			 ++row, ++column) 
-		{
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}
-
-	for (CellCoord start_column = 0; start_column < ROW_LEN_; ++start_column) {
-		CellCoord row = 0;
-		unsigned char cur_streak = 0;
-
-		for (CellCoord column = start_column;
-			 row < COLUMN_LEN_ && column < ROW_LEN_;
-			 ++row, ++column) 
-		{
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}
-
-	return false;
-}
-
-bool GameMap::CheckSideDiagonalCollinearsGameStatus(const CellFlag check_flag) {
-	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	if (COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX)
-		throw std::runtime_error("COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX");
-
-	if (ROW_LEN_ == 0)
-		return false;
-
-	for (CellCoord start_row = 0; start_row < COLUMN_LEN_; ++start_row) {
-		CellCoord column = ROW_LEN_ - 1;
-		unsigned char cur_streak = 0;
-
-		for (CellCoord row = start_row; 
-			 row < COLUMN_LEN_ && column != UCHAR_MAX;
-			 ++row, --column) 
-		{
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}
-
-	for (CellCoord start_column = ROW_LEN_ - 1; start_column != UCHAR_MAX; --start_column) {
-		CellCoord row = 0;
-		unsigned char cur_streak = 0;
-
-		for (CellCoord column = start_column;
-			 row < COLUMN_LEN_ && column != UCHAR_MAX;
-			 ++row, --column) 
-		{
-			if (GetCell(row, column) == check_flag)
-				cur_streak++;
-			else
-				cur_streak = 0;
-
-			if (cur_streak == WIN_STREAK_SIZE_)
-				return true;
-		}
-	}
-
-	return false;
-}
-
 bool GameMap::CheckUnusedCells() {
 	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
 		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
@@ -200,6 +58,44 @@ bool GameMap::CheckUnusedCells() {
 	return false;	
 }
 
+bool GameMap::CheckPlayerWin(const CellFlag flag) {
+	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
+		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
+
+	if (COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX)
+		throw std::runtime_error("COLUMN_LEN_ > GameMapConstant::CELL_COORD_MAX");
+
+	Liner liner(storage_);
+	auto line = liner.Next();
+
+	bool is_win = false;
+
+	while (line != nullptr) {
+		CellCoord l = 0, r = WIN_STREAK_SIZE_;
+		while (r <= line->size()) {
+			unsigned int cur_streak = 0;
+			for (CellCoord it = l; it < r; ++it)
+				if ((*line)[it].GetFlag() == flag)
+					cur_streak++;
+
+			if (cur_streak == WIN_STREAK_SIZE_) {
+				is_win = true;
+				break;
+			}
+
+			l++, r++;
+		}
+
+		delete line;
+		line = liner.Next();
+
+		if (is_win)
+			break;
+	}
+
+	return is_win;
+}
+
 GameStatus GameMap::CheckGameStatus() {
 	if (ROW_LEN_ > GameMapConstant::CELL_COORD_MAX)
 		throw std::runtime_error("ROW_LEN_ > GameMapConstant::CELL_COORD_MAX");
@@ -210,15 +106,8 @@ GameStatus GameMap::CheckGameStatus() {
 	bool first_win  = false,
 		 second_win	= false;
 
-	first_win = (CheckRowsGameStatus(CellFlag::PLAYER_FIRST) || 
-				 CheckColumnsGameStatus(CellFlag::PLAYER_FIRST) ||
-				 CheckMainDiagonalCollinearsGameStatus(CellFlag::PLAYER_FIRST) || 
-				 CheckSideDiagonalCollinearsGameStatus(CellFlag::PLAYER_FIRST));
-
-	second_win = (CheckRowsGameStatus(CellFlag::PLAYER_SECOND) || 
-				  CheckColumnsGameStatus(CellFlag::PLAYER_SECOND) ||
-				  CheckMainDiagonalCollinearsGameStatus(CellFlag::PLAYER_SECOND) || 
-				  CheckSideDiagonalCollinearsGameStatus(CellFlag::PLAYER_SECOND));
+	first_win = (CheckPlayerWin(CellFlag::PLAYER_FIRST));
+	second_win = (CheckPlayerWin(CellFlag::PLAYER_SECOND));
 
 	if (first_win && second_win)
 		return GameStatus::INCORRECT;
