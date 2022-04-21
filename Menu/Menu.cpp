@@ -25,6 +25,7 @@ MenuChoice Menu::WaitChoice() {
 
 		switch(event->Type()) {
 			case EventType::QUIT_EVENT:
+				window_.DeleteEvents();
 				return MenuChoice::QUIT_CHOICE;
 				break;
 
@@ -34,11 +35,15 @@ MenuChoice Menu::WaitChoice() {
 				auto x = click.first,
 					 y = click.second;
 
-				if (x > 91 && x < 310 && y > 91 && y < 310)
+				if (x > 91 && x < 310 && y > 91 && y < 310) {
+					window_.DeleteEvents();
 					return MenuChoice::PVP_CHOICE;
+				}
 
-				if (x > 391 && x < 610 && y > 91 && y < 310)
+				if (x > 391 && x < 610 && y > 91 && y < 310) {
+					window_.DeleteEvents();
 					return MenuChoice::COMPUTER_CHOICE;
+				}
 
 				break;
 		}

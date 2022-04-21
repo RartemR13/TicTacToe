@@ -35,6 +35,8 @@ public:
 	GameStatus CheckGameStatus();
 	Turn GetTurn();
 
+	GameMapStorage& GetStorage();
+
 	const CellCoord ROW_LEN_,
 					COLUMN_LEN_,
 					WIN_STREAK_SIZE_;

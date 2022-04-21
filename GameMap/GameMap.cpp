@@ -267,3 +267,7 @@ Turn GameMap::GetTurn() {
 
 	return Turn::PLAYER_FIRST_TURN;
 }
+
+GameMapStorage& GameMap::GetStorage() {
+	return storage_;
+}

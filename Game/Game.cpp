@@ -76,7 +76,7 @@ void Game::StartGame() {
 				CellCoord row = GetClickRow(click);
 				CellCoord column = GetClickColumn(click);
 
-				std::cout << (int)row << " " << (int)column << std::endl;
+				//std::cout << (int)row << " " << (int)column << std::endl;
 
 				if (IsCellClick(click) && game_map_.GetCell(row, column) == CellFlag::UNUSED) {
 					if (game_mode_ == GameMode::PVP_MODE) {
