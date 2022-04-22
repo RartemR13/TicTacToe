@@ -3,11 +3,13 @@
 #include <iostream>
 
 void DrawX(CellCoord row, CellCoord column, Window& window) {
-	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 5, 42, 255, 0, 0);
-	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 6, 42, 255, 0, 0);
+	window.DrawSegment(((int)column)*52 + 5, ((int)row)*52 + 5, 
+					   ((int)column)*52 + 5 + 42, ((int)row)*52 + 5 + 42,
+					   255, 0, 0);
 
-	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 47, -42, 255, 0, 0);
-	window.DrawDiagonalLine(((int)row)*52 + 5, ((int)column)*52 + 46, -42, 255, 0, 0);
+	window.DrawSegment(((int)column)*52 + 47, ((int)row)*52 + 5,
+					   ((int)column)*52 + 47 - 42, ((int)row)*52 + 5 + 42,
+					   255, 0, 0);
 }
 
 void Draw0(CellCoord row, CellCoord column, Window& window) {
@@ -31,13 +33,13 @@ Game::Game(GameMode game_mode,
 
 void Game::DrawNet() {
 	for (int i = 0; i <= game_map_.ROW_LEN_; ++i) {
-		window_.DrawVerticalLine(i * 52, 0, 0, 0);
-		window_.DrawVerticalLine(i * 52 + 1, 0, 0, 0);	
+		window_.DrawSegment(i * 52, 0, i * 52, window_.height_ - 1, 0, 0, 0);
+		window_.DrawSegment(i * 52 + 1, 0, i * 52 + 1, window_.height_ - 1, 0, 0, 0);	
 	}
 
 	for (int i = 0; i <= game_map_.COLUMN_LEN_; ++i) {
-		window_.DrawGorizontalLine(i * 52, 0, 0, 0);
-		window_.DrawGorizontalLine(i * 52 + 1, 0, 0, 0);		
+		window_.DrawSegment(0, i * 52, window_.width_ - 1, i * 52, 0, 0, 0);
+		window_.DrawSegment(0, i * 52 + 1, window_.width_ - 1, i * 52 + 1, 0, 0, 0);		
 	}
 }
 

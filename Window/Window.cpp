@@ -61,40 +61,6 @@ void Window::SetPixel(unsigned short x, unsigned short y,
 	*target_pixel = *(unsigned int*)pixel;
 }
 
-void Window::DrawVerticalLine(unsigned short x,
-					  		  unsigned char r, unsigned char g, unsigned char b)
-{
-	for (int i = 0; i < height_; ++i)
-		SetPixel(x, i, r, g, b);
-
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
-}
-
-void Window::DrawGorizontalLine(unsigned short y,
-								unsigned char r, unsigned char g, unsigned char b) 
-{
-	for (int i = 0; i < width_; ++i)
-		SetPixel(i, y, r, g, b);
-
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
-}
-
-void Window::DrawDiagonalLine(unsigned short x, unsigned short y,
-							  short d,
-							  unsigned char r, unsigned char g, unsigned char b) 
-{
-
-	if (d > 0) {
-		for (int i = x, j = y; i <= d+x && j <= d+y; ++i, ++j)
-			SetPixel(j, i, r, g, b);
-	} else {
-		for (int i = x, j = y; i <= (int)(-d)+((int)x) && j >= ((int)d)+((int)y); ++i, --j)
-			SetPixel(j, i, r, g, b);
-	}
-
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
-}
-
 void Window::DrawCircle(unsigned short x1, unsigned short y1,
 						unsigned short x2, unsigned short y2,
 						unsigned char r, unsigned char g, unsigned char b)
@@ -116,15 +82,12 @@ void Window::DrawFrame(unsigned short x1, unsigned short y1,
 			   		   unsigned short x2, unsigned short y2,
 			   		   unsigned char r, unsigned char g, unsigned char b) 
 {
-	for (int i = x1; i <= x2; ++i) {
-		SetPixel(i, y1, r, g, b);
-		SetPixel(i, y2, r, g, b);
-	}
 
-	for (int i = y1; i <= y2; ++i) {
-		SetPixel(x1, i, r, g, b);
-		SetPixel(x2, i, r, g, b);
-	}
+	DrawSegment(x1, y1, x1, y2, r, g, b);
+	DrawSegment(x2, y2, x2, y1, r, g, b);
+
+	DrawSegment(x2, y2, x1, y2, r, g, b);
+	DrawSegment(x1, y1, x2, y1, r, g, b);
 
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
@@ -171,5 +134,57 @@ void Window::DrawBMP(std::string path, unsigned short x, unsigned short y) {
 		throw std::runtime_error(SDL_GetError());
 
 	SDL_FreeSurface(img);
+	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
+}
+
+void Window::DrawSegment(unsigned short x1, unsigned short y1,
+						 unsigned short x2, unsigned short y2,
+						 unsigned char r, unsigned char g, unsigned char b)
+{
+
+	if (x1 > x2) {
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+
+
+	auto dl = [&](int x1_, int y1_, int x2_, int y2_) {
+				 	return (x1_ - x2_) * (x1_ - x2_) + (y1_ - y2_) * (y1_ - y2_); 
+				 };
+
+	int eps = sqrt(dl(x1, y1, x2, y2));
+
+	int A = (y1 - y2),
+		B = -(x1 - x2);
+
+	int C = -(A*x1 + B*y1);
+	
+
+	if (y1 == y2) {
+		for (int i = x1; i <= x2; ++i)
+			SetPixel(i, y1, r, g, b);
+	} else if (x1 == x2) {
+		if (y1 > y2)
+			std::swap(y1, y2);
+
+		for (int i = y1; i <= y2; ++i)
+			SetPixel(x1, i, r, g, b);
+	} else { 
+		int last = y1;
+		int cur = y1;
+		for (int i = x1+1; i <= x2; ++i) {
+			for (int j = std::max(last - eps, 0); j <= std::min(last + eps, height_-1); ++j)
+				if (abs(B*j + A*i + C) < eps) {
+					SetPixel(i, j, r, g, b);
+					if (abs(B*j + A*i + C) + eps / 3 < abs(B*cur + A*i + C) && y1 > y2)
+						cur = j;
+					else if (abs(B*j + A*i + C)  < abs(B*cur + A*i + C) + eps / 3)
+						cur = j;
+				}
+
+			last = cur;
+		}
+	}
+
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }

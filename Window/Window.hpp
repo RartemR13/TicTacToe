@@ -24,32 +24,25 @@ public:
 	WindowEvent* WaitEvent();
 	void DeleteEvents();
 
-
-	void DrawVerticalLine(unsigned short,
-						  unsigned char, unsigned char, unsigned char);
-
-	void DrawGorizontalLine(unsigned short,
-							unsigned char, unsigned char, unsigned char);
-
 	void DrawCircle(unsigned short, unsigned short,
 					unsigned short, unsigned short,
 					unsigned char, unsigned char, unsigned char);
 
-	void DrawDiagonalLine(unsigned short, unsigned short,
-						  short,
-						  unsigned char, unsigned char, unsigned char);
-
 	void DrawFrame(unsigned short, unsigned short,
 				   unsigned short, unsigned short,
 				   unsigned char, unsigned char, unsigned char);
+
+	void DrawSegment(unsigned short, unsigned short,
+					 unsigned short, unsigned short,
+					 unsigned char, unsigned char, unsigned char);
+
+	unsigned short width_,
+				   height_;
 private:
 	Window() = default;
 
 	void SetPixel(unsigned short, unsigned short,
 			  	  unsigned char, unsigned char, unsigned char);
-
-	unsigned short width_,
-				   height_;
 
 	void* window_;
 	void* surface_;
