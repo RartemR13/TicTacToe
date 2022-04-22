@@ -15,6 +15,8 @@ Menu::Menu() :
 
 	window_.DrawFrame(390, 90, 610, 310, 0, 0, 255);
 	window_.DrawFrame(391, 91, 611, 311, 0, 0, 255);
+
+	window_.UpdateSurface();
 }
 
 MenuChoice Menu::WaitChoice() {

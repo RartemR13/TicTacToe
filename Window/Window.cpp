@@ -42,7 +42,6 @@ void Window::Fill(unsigned char r, unsigned char g, unsigned char b) {
 				 NULL, 
 				 SDL_MapRGB(static_cast<SDL_Surface*>(surface_)->format, r, g, b));
 
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
 
 void Window::SetPixel(unsigned short x, unsigned short y,
@@ -74,8 +73,6 @@ void Window::DrawCircle(unsigned short x1, unsigned short y1,
 			{
 				SetPixel(j, i, r, g, b);
 			}
-
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
 
 void Window::DrawFrame(unsigned short x1, unsigned short y1,
@@ -88,8 +85,6 @@ void Window::DrawFrame(unsigned short x1, unsigned short y1,
 
 	DrawSegment(x2, y2, x1, y2, r, g, b);
 	DrawSegment(x1, y1, x2, y1, r, g, b);
-
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
 
 WindowEvent* Window::WaitEvent() {
@@ -134,7 +129,6 @@ void Window::DrawBMP(std::string path, unsigned short x, unsigned short y) {
 		throw std::runtime_error(SDL_GetError());
 
 	SDL_FreeSurface(img);
-	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }
 
 void Window::DrawSegment(unsigned short x1, unsigned short y1,
@@ -185,6 +179,8 @@ void Window::DrawSegment(unsigned short x1, unsigned short y1,
 			last = cur;
 		}
 	}
+}
 
+void Window::UpdateSurface() {
 	SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_));
 }

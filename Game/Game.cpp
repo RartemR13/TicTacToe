@@ -10,10 +10,13 @@ void DrawX(CellCoord row, CellCoord column, Window& window) {
 	window.DrawSegment(((int)column)*52 + 47, ((int)row)*52 + 5,
 					   ((int)column)*52 + 47 - 42, ((int)row)*52 + 5 + 42,
 					   255, 0, 0);
+
+	window.UpdateSurface();
 }
 
 void Draw0(CellCoord row, CellCoord column, Window& window) {
 	window.DrawCircle(row*52 + 5, column*52 + 5, row*52 + 47, column*52 + 47, 0, 0, 255);
+	window.UpdateSurface();
 }
 
 Game::Game(GameMode game_mode, 
@@ -29,6 +32,8 @@ Game::Game(GameMode game_mode,
 	
 	if (game_mode == GameMode::COMPUTER_MODE)
 		computer_.DoTurn(window_, DrawX);
+
+	window_.UpdateSurface();
 }
 
 void Game::DrawNet() {
@@ -41,6 +46,8 @@ void Game::DrawNet() {
 		window_.DrawSegment(0, i * 52, window_.width_ - 1, i * 52, 0, 0, 0);
 		window_.DrawSegment(0, i * 52 + 1, window_.width_ - 1, i * 52 + 1, 0, 0, 0);		
 	}
+
+	window_.UpdateSurface();
 }
 
 

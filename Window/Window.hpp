@@ -36,6 +36,8 @@ public:
 					 unsigned short, unsigned short,
 					 unsigned char, unsigned char, unsigned char);
 
+	void UpdateSurface();
+
 	unsigned short width_,
 				   height_;
 private:
