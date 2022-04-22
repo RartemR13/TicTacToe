@@ -37,13 +37,14 @@ public:
 
 	GameMapStorage& GetStorage();
 
+	bool CheckPlayerWin(const CellFlag);
+
 	const CellCoord ROW_LEN_,
 					COLUMN_LEN_,
 					WIN_STREAK_SIZE_;
 private:
 	GameMapStorage storage_;
 
-	bool CheckPlayerWin(const CellFlag);
 
 	bool CheckUnusedCells();
 };

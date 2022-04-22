@@ -19,6 +19,7 @@ public:
 private:
 
 	void DrawNet();
+	void DrawWin(CellFlag flag);
 
 	Window  window_;
 	GameMap game_map_;

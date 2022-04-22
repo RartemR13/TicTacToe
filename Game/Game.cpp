@@ -1,6 +1,10 @@
 #include "Game.hpp"
+#include "../Liner/Liner.hpp"
 
+#include <vector>
+#include <stdexcept>
 #include <iostream>
+#include <utility>
 
 void DrawX(CellCoord row, CellCoord column, Window& window) {
 	window.DrawSegment(((int)column)*52 + 5, ((int)row)*52 + 5, 
@@ -50,8 +54,6 @@ void Game::DrawNet() {
 	window_.UpdateSurface();
 }
 
-
-
 bool IsCellClick(std::pair<unsigned short, unsigned short> click) {
 	return click.first % 52 > 1 && click.second % 52 > 1; 
 }
@@ -64,11 +66,72 @@ CellCoord GetClickColumn(std::pair<unsigned short, unsigned short> click) {
 	return click.first / 52;
 }
 
+void Game::DrawWin(CellFlag flag) {
+	Liner liner(game_map_.GetStorage());
+
+	auto line = liner.Next();
+	while (line != nullptr) {
+		int l = 0, r = game_map_.WIN_STREAK_SIZE_;
+		while (r <= line->size()) {
+			unsigned int cur_streak = 0;
+			for (int i = l; i < r; ++i) {
+				if ((*line)[i].GetFlag() == flag)
+					cur_streak++;
+			}
+
+			if (cur_streak == game_map_.WIN_STREAK_SIZE_) {
+				std::pair<int, int> first_rect  = liner.GetCoords(l),
+					 				second_rect = liner.GetCoords(r-1);
+
+				delete line;
+
+				first_rect.first *= 52;
+				first_rect.first += 52 / 2;
+
+				first_rect.second *= 52;
+				first_rect.second += 52 / 2;
+
+				second_rect.first *= 52;
+				second_rect.first += 52 / 2;
+
+				second_rect.second *= 52;
+				second_rect.second += 52 / 2;
+
+//				std::cout << first_rect.first << " " << first_rect.second << std::endl;
+
+				window_.DrawSegment(first_rect.second-1, first_rect.first,
+									second_rect.second-1, second_rect.first,
+									0, 255, 0);
+
+				window_.DrawSegment(first_rect.second, first_rect.first-1,
+									second_rect.second, second_rect.first-1,
+									0, 255, 0);
+
+				window_.DrawSegment(first_rect.second, first_rect.first,
+									second_rect.second, second_rect.first,
+									0, 255, 0);
+
+
+				window_.UpdateSurface();
+
+				return;	
+			}
+
+			l++, r++;
+		}
+
+		delete line;
+		line = liner.Next();
+	}
+
+	throw std::runtime_error("Not win");
+}
 
 void Game::StartGame() {
 
 	DrawNet();
-	bool quit = false;
+	bool quit = false,
+		 end_game = false;
 
 	while (true) {
 		WindowEvent* event = window_.WaitEvent();
@@ -81,11 +144,12 @@ void Game::StartGame() {
 				break;
 
 			case EventType::CLICK_EVENT:
+				if (end_game)
+					break;
+
 				auto click = event->GetClick();
 				CellCoord row = GetClickRow(click);
 				CellCoord column = GetClickColumn(click);
-
-				//std::cout << (int)row << " " << (int)column << std::endl;
 
 				if (IsCellClick(click) && game_map_.GetCell(row, column) == CellFlag::UNUSED) {
 					if (game_mode_ == GameMode::PVP_MODE) {
@@ -98,6 +162,26 @@ void Game::StartGame() {
 							if (player_second_.Set(row, column, window_, Draw0) == GameStatus::PROCESS)
 								computer_.DoTurn(window_, DrawX);
 						}
+					}
+
+					switch(game_map_.CheckGameStatus()) {
+						case GameStatus::INCORRECT:
+							throw std::runtime_error("Something wrong in game");
+							break;
+
+						case GameStatus::PLAYER_FIRST_WIN:
+							end_game = true;
+							DrawWin(CellFlag::PLAYER_FIRST);
+							break;
+
+						case GameStatus::PLAYER_SECOND_WIN:
+							end_game = true;
+							DrawWin(CellFlag::PLAYER_SECOND);
+							break;
+
+						case GameStatus::DRAW:
+							end_game = true;
+							break;
 					}
 				}
 				break;
