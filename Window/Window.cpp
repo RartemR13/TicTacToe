@@ -90,8 +90,7 @@ void Window::DrawFrame(unsigned short x1, unsigned short y1,
 
 WindowEvent* Window::WaitEvent() {
 	SDL_Event event = {};
-	if (SDL_WaitEvent(&event) == 0)
-		throw std::runtime_error(SDL_GetError());
+	while (SDL_WaitEvent(&event) == 0);
 
 	switch(event.type) {
 		case SDL_QUIT:
