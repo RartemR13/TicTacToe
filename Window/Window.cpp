@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdexcept>
+#include <cmath>
 
 #include <iostream>
 
