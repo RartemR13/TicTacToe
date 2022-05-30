@@ -1,7 +1,7 @@
 #include "Liner.hpp"
 
-#include <climits>
-#include <stdexcept>
+#include <climits> //INT_MAX ...
+#include <stdexcept> 
 
 enum LinerStatus {
 	ROW,

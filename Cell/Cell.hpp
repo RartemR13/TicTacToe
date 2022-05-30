@@ -6,15 +6,16 @@ enum CellFlag {
 	PLAYER_SECOND //если в клетке 0
 };
 
-typedef unsigned char CellCoord;
+typedef unsigned char CellCoord; //Макрос, CellCoord = unsigned char
 
+//Класс клетка
 class Cell {
 public:
 	Cell();
 
-	void SetFlag(const CellFlag);
-	CellFlag GetFlag();
+	void SetFlag(const CellFlag); //Поставить флаг в клетку
+	CellFlag GetFlag();			  //Получить флаг
 
 private:
-	CellFlag flag_;
+	CellFlag flag_;				  //Поле, в котором храниться сам флаг
 };

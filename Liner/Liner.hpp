@@ -1,20 +1,19 @@
 #pragma once
 
-#include <vector>
-#include <utility>
+#include <vector> //Аналог массива в C++
+#include <utility> //там определен pair<..., ...>
 
 #include "../Cell/Cell.hpp"
 
 class Liner {
 public:
-	Liner(std::vector<std::vector<Cell>>&);
+	Liner(std::vector<std::vector<Cell>>&); //Конструктор, на вход принимает двумерный массив клеток
 
-	std::vector<Cell>* Next();
-	std::pair<CellCoord, CellCoord> GetCoords(CellCoord);
-
+	std::vector<Cell>* Next(); //Получить линии матрицы
+	std::pair<CellCoord, CellCoord> GetCoords(CellCoord); //Получить абсолютные координаты в матрице по относительной координате в линии
 private:
-	std::vector<std::vector<Cell>> matrix_;
-	int liner_status_;
+	std::vector<std::vector<Cell>> matrix_; //сама матрица
+	int liner_status_; //Статус
 
-	CellCoord cur_line_num_;
+	CellCoord cur_line_num_; //номер линии
 };
